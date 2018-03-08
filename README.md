@@ -27,6 +27,8 @@ python main.py --mode generate --port [PORT] --iteration 1 --epsilon 0.03 --env_
 ```
 
 ### Result
+from the left, legitimate examples, perturbed examples, and indication of perturbed images that changed predictions of the classifier
+
 1. iteration : 1, epsilon : 0.03
 ![Figure1](misc/fig1.PNG)
 2. iteration : 5, epsilon : 0.03
