@@ -9,7 +9,6 @@ import torch.nn.functional as F
 from torch.autograd import Variable
 from torchvision.utils import make_grid
 from torchvision import transforms
-from tensorboardX import SummaryWriter
 
 from models.toynet import TOYNET
 from datasets.datasets import return_data
@@ -33,6 +32,8 @@ class Solver(object):
         self.data_loader = return_data(args)
         self.global_epoch = 0
         self.global_iter = 0
+        self.tensorboard = args.tensorboard
+        if self.tensorboard : from tensorboardX import SummaryWriter
         self.print_ = not args.silent
 
         # Visualization Tools
@@ -63,8 +64,9 @@ class Solver(object):
         self.summary_dir = Path(args.summary_dir).joinpath(args.env_name)
         if not self.summary_dir.exists() : self.summary_dir.mkdir(parents=True,exist_ok=True)
         self.ckpt_dir = Path(args.ckpt_dir).joinpath(args.env_name)
-        self.tf = SummaryWriter(log_dir=str(self.summary_dir))
-        self.tf.add_text(tag='argument',text_string=str(args),global_step=self.global_epoch)
+        if self.tensorboard :
+            self.tf = SummaryWriter(log_dir=str(self.summary_dir))
+            self.tf.add_text(tag='argument',text_string=str(args),global_step=self.global_epoch)
 
     def model_init(self, args):
         # Network
@@ -106,23 +108,25 @@ class Solver(object):
                     if self.print_: print('acc:{:.3f} loss:{:.3f}'.format(correct,cost.data[0]))
 
 
-                    self.tf.add_scalars(main_tag='performance/acc',
-                                        tag_scalar_dict={'train':correct},
-                                        global_step=self.global_iter)
-                    self.tf.add_scalars(main_tag='performance/error',
-                                        tag_scalar_dict={'train':1-correct},
-                                        global_step=self.global_iter)
-                    self.tf.add_scalars(main_tag='performance/cost',
-                                        tag_scalar_dict={'train':cost.data[0]},
-                                        global_step=self.global_iter)
+                    if self.tensorboard :
+                        self.tf.add_scalars(main_tag='performance/acc',
+                                            tag_scalar_dict={'train':correct},
+                                            global_step=self.global_iter)
+                        self.tf.add_scalars(main_tag='performance/error',
+                                            tag_scalar_dict={'train':1-correct},
+                                            global_step=self.global_iter)
+                        self.tf.add_scalars(main_tag='performance/cost',
+                                            tag_scalar_dict={'train':cost.data[0]},
+                                            global_step=self.global_iter)
 
 
             self.test()
 
 
-        self.tf.add_scalars(main_tag='performance/best/acc',
-                            tag_scalar_dict={'test':self.history['acc']},
-                            global_step=self.history['iter'])
+        if self.tensorboard :
+            self.tf.add_scalars(main_tag='performance/best/acc',
+                                tag_scalar_dict={'test':self.history['acc']},
+                                global_step=self.history['iter'])
         print(" [*] Training Finished!")
 
 
@@ -157,17 +161,18 @@ class Solver(object):
             print('*TOP* ACC:{:.4f} at e:{:03d}'.format(accuracy,self.global_epoch,))
             print()
 
-            self.tf.add_scalars(main_tag='performance/acc',
-                                tag_scalar_dict={'test':accuracy},
-                                global_step=self.global_iter)
+            if self.tensorboard :
+                self.tf.add_scalars(main_tag='performance/acc',
+                                    tag_scalar_dict={'test':accuracy},
+                                    global_step=self.global_iter)
 
-            self.tf.add_scalars(main_tag='performance/error',
-                                tag_scalar_dict={'test':(1-accuracy)},
-                                global_step=self.global_iter)
+                self.tf.add_scalars(main_tag='performance/error',
+                                    tag_scalar_dict={'test':(1-accuracy)},
+                                    global_step=self.global_iter)
 
-            self.tf.add_scalars(main_tag='performance/cost',
-                                tag_scalar_dict={'test':cost},
-                                global_step=self.global_iter)
+                self.tf.add_scalars(main_tag='performance/cost',
+                                    tag_scalar_dict={'test':cost},
+                                    global_step=self.global_iter)
 
         if self.history['acc'] < accuracy :
             self.history['acc'] = accuracy

@@ -51,9 +51,10 @@ if __name__ == "__main__":
     parser.add_argument('--cuda', type=str2bool, default=True, help='enable cuda')
     parser.add_argument('--silent', type=str2bool, default=False, help='')
     parser.add_argument('--mode', type=str, default='train', help='train / test / generate')
-    parser.add_argument('--seed', default = 1, type=int, help='random seed')
-    parser.add_argument('--iteration', default = 1, type=int, help='the number of iteration for FGSM')
-    parser.add_argument('--epsilon', default = 0.03, type=float, help='epsilon for FGSM')
+    parser.add_argument('--seed', default=1, type=int, help='random seed')
+    parser.add_argument('--iteration', default=1, type=int, help='the number of iteration for FGSM')
+    parser.add_argument('--epsilon', default=0.03, type=float, help='epsilon for FGSM')
+    parser.add_argument('--tensorboard', default=True, type=str2bool, help='enable tensorboard')
     args = parser.parse_args()
 
     main(args)
