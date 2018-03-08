@@ -1,7 +1,10 @@
 # FGSM(Fast Gradient Sign Method)
+<br>
 
 ### Overview 
-This is simple pytorch implementation of FGSM([paper])
+Simple pytorch implementation of FGSM([from this paper])
+![Figure0](misc/fig0.PNG)
+<br>
 
 ### Dependencies
 ```
@@ -11,6 +14,7 @@ visdom
 tensorboardX(optional)
 tensorflow(optional)
 ```
+<br>
 
 ### Usage
 1. start the visdom server
@@ -25,6 +29,7 @@ python main.py --mode train --port [PORT] --env_name my_model
 ```
 python main.py --mode generate --port [PORT] --iteration 1 --epsilon 0.03 --env_name my_model --load_ckpt best_acc.tar
 ```
+<br>
 
 ### Result
 from the left, legitimate examples, perturbed examples, and indication of perturbed images that changed predictions of the classifier
@@ -35,10 +40,11 @@ from the left, legitimate examples, perturbed examples, and indication of pertur
 ![Figure2](misc/fig2.PNG)
 1. iteration : 1, epsilon : 0.5
 ![Figure3](misc/fig3.PNG)
+<br>
 
 ### To Do
-- [ ] add cifar10 results
+- [ ] add cifar10
 - [ ] remove visdom dependency
 - [ ] add targeted/untargeted generation mode
 
-[paper]: https://arxiv.org/abs/1412.6572
+[from this paper]: https://arxiv.org/abs/1412.6572
