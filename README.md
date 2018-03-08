@@ -2,7 +2,7 @@
 <br>
 
 ### Overview 
-Simple pytorch implementation of FGSM([from this paper])
+Simple pytorch implementation of FGSM(from this paper:[EXPLAINING AND HARNESSING ADVERSARIAL EXAMPLES])
 ![Figure0](misc/fig0.PNG)
 <br>
 
@@ -47,4 +47,4 @@ from the left, legitimate examples, perturbed examples, and indication of pertur
 - [ ] remove visdom dependency
 - [ ] add targeted/untargeted generation mode
 
-[from this paper]: https://arxiv.org/abs/1412.6572
+[EXPLAINING AND HARNESSING ADVERSARIAL EXAMPLES]: https://arxiv.org/abs/1412.6572
