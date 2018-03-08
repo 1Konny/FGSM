@@ -3,3 +3,5 @@ __pycache__
 checkpoints/*
 summary/*
 datasets/MNIST
+
+git.sh
