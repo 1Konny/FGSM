@@ -35,7 +35,7 @@ def main(args):
 if __name__ == "__main__":
 
     parser = argparse.ArgumentParser(description='toynet template')
-    parser.add_argument('--epoch', default = 50, type=int, help='epoch size')
+    parser.add_argument('--epoch', default = 20, type=int, help='epoch size')
     parser.add_argument('--batch_size', default = 100, type=int, help='mini-batch size')
     parser.add_argument('--lr', default = 2e-4, type=float, help='learning rate')
     parser.add_argument('--y_dim', default = 10, type=int, help='the number of classes')
@@ -54,7 +54,7 @@ if __name__ == "__main__":
     parser.add_argument('--seed', default=1, type=int, help='random seed')
     parser.add_argument('--iteration', default=1, type=int, help='the number of iteration for FGSM')
     parser.add_argument('--epsilon', default=0.03, type=float, help='epsilon for FGSM')
-    parser.add_argument('--tensorboard', default=True, type=str2bool, help='enable tensorboard')
+    parser.add_argument('--tensorboard', default=False, type=str2bool, help='enable tensorboard')
     args = parser.parse_args()
 
     main(args)
