@@ -2,4 +2,4 @@
 ## simple pytorch implementation of FGSM([paper])
 
 
-[paper]: (https://arxiv.org/abs/1412.6572)
+[paper]: https://arxiv.org/abs/1412.6572
