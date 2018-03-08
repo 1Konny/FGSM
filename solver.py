@@ -194,8 +194,8 @@ class Solver(object):
         accuracy_true,cost_true,accuracy_adv,cost_adv = values
 
         self.vf.imshow_multi(x_true, title='legitimate', factor=1.5)
-        self.vf.imshow_multi(x_adv, title='perturbed(e:{})'.format(epsilon), factor=1.5)
-        self.vf.imshow_multi(changed, title='changed(e:{})'.format(epsilon), factor=1.5)
+        self.vf.imshow_multi(x_adv, title='perturbed(e:{},i:{})'.format(epsilon,iteration), factor=1.5)
+        self.vf.imshow_multi(changed, title='changed(white)'.format(epsilon), factor=1.5)
         print('[BEFORE] accuracy : {:.2f} cost : {:.3f}'.format(accuracy_true,cost_true))
         print('[AFTER] accuracy : {:.2f} cost : {:.3f}'.format(accuracy_adv,cost_adv))
 
