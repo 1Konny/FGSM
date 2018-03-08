@@ -36,5 +36,9 @@ from the left, legitimate examples, perturbed examples, and indication of pertur
 1. iteration : 1, epsilon : 0.5
 ![Figure3](misc/fig3.PNG)
 
+### To Do
+- [ ] add cifar10 results
+- [ ] remove visdom dependency
+- [ ] add targeted/untargeted generation mode
 
 [paper]: https://arxiv.org/abs/1412.6572
