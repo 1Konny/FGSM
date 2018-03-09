@@ -195,21 +195,25 @@ class Solver(object):
         self.set_mode('eval')
 
         x_true, y_true = self.sample_data(num_sample)
-        if isinstance(target, int) and (target in range(self.y_dim)): y_true.fill_(target)
+        if isinstance(target, int) and (target in range(self.y_dim)):
+            y_target = torch.LongTensor(y_true.size()).fill_(target)
+        else :
+            y_target = torch.LongTensor(y_true.size()).fill_(-1)
+            target= -1
 
-        x_adv, changed, values = self.FGSM(x_true,y_true,epsilon,iteration)
+        x_adv, changed, values = self.FGSM(x_true,y_true,y_target,epsilon,iteration)
         accuracy_true,cost_true,accuracy_adv,cost_adv = values
 
         save_image(x_true,
-                self.output_dir.joinpath('legitimate(e:{},i:{}).jpg'.format(epsilon,iteration)),
+                self.output_dir.joinpath('legitimate(t:{},e:{},i:{}).jpg'.format(target,epsilon,iteration)),
                 nrow=10,
                 padding=0)
         save_image(x_adv,
-                self.output_dir.joinpath('perturbed(e:{},i:{}).jpg'.format(epsilon,iteration)),
+                self.output_dir.joinpath('perturbed(t:{},e:{},i:{}).jpg'.format(target,epsilon,iteration)),
                 nrow=10,
                 padding=0)
         save_image(changed,
-                self.output_dir.joinpath('changed(e:{},i:{}).jpg'.format(epsilon,iteration)),
+                self.output_dir.joinpath('changed(t:{},e:{},i:{}).jpg'.format(target,epsilon,iteration)),
                 nrow=10,
                 padding=0)
         if self.visdom :
@@ -235,9 +239,13 @@ class Solver(object):
         return x,y
 
 
-    def FGSM(self, x, y, epsilon=0.03, iteration=1):
+    def FGSM(self, x, y, y_t, epsilon=0.03, iteration=1):
         self.set_mode('eval')
 
+        if -1 in y_t : targeted = False
+        else : targeted = True
+
+        y_target = cuda(Variable(y_t, requires_grad=False),self.cuda)
         y_true = cuda(Variable(y, requires_grad=False),self.cuda)
         x_true = cuda(Variable(x, requires_grad=True),self.cuda)
         x_adv = x_true
@@ -249,14 +257,17 @@ class Solver(object):
 
         for i in range(iteration):
             logit = self.net(x_adv)
-            cost = F.cross_entropy(logit, y_true)
+            if targeted : cost = F.cross_entropy(logit, y_target)
+            else :  cost = F.cross_entropy(logit, y_true)
+
             self.net.zero_grad()
             try :x_adv.grad.data.fill_(0)
             except : pass
             cost.backward()
 
             x_adv.grad.sign_()
-            x_adv = x_adv + epsilon*x_adv.grad
+            if targeted: x_adv = x_adv - epsilon*x_adv.grad
+            else : x_adv = x_adv + epsilon*x_adv.grad
             x_adv = torch.clamp(x_adv,-1,1)
             x_adv = Variable(x_adv.data, requires_grad=True)
 
@@ -267,9 +278,11 @@ class Solver(object):
 
         # make indication of perturbed images that changed predictions of the classifier
 
-        changed = torch.eq(prediction_true,prediction_adv)
-        changed = torch.eq(changed,0).float()
-        changed = changed.view(-1,1,1,1).repeat(1,3,28,28)
+        if targeted : changed = torch.eq(y_target,prediction_adv)
+        else :
+            changed = torch.eq(prediction_true,prediction_adv)
+            changed = torch.eq(changed,0)
+        changed = changed.float().view(-1,1,1,1).repeat(1,3,28,28)
 
         changed[:,0,:,:] = where(changed[:,0,:,:]==1,252,91)
         changed[:,1,:,:] = where(changed[:,1,:,:]==1,39,252)
