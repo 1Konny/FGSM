@@ -70,7 +70,7 @@ class Solver(object):
 
     def model_init(self, args):
         # Network
-        self.net = TOYNET(y_dim=self.y_dim)
+        self.net = cuda(TOYNET(y_dim=self.y_dim),self.cuda)
         self.net.weight_init(type='kaiming')
 
         # Optimizers
@@ -186,8 +186,6 @@ class Solver(object):
     def generate(self,num_sample=100,epsilon=0.03,iteration=10):
         self.set_mode('eval')
 
-        total = len(self.data_loader['test'].dataset)
-        seed = torch.FloatTensor(num_sample).uniform_(1,total).long()
         x_true, y_true = self.sample_data(num_sample)
 
         x_adv, changed, values = self.FGSM(x_true,y_true,epsilon,iteration)
@@ -200,6 +198,18 @@ class Solver(object):
         print('[AFTER] accuracy : {:.2f} cost : {:.3f}'.format(accuracy_adv,cost_adv))
 
         self.set_mode('train')
+
+
+    def sample_data(self, num_sample=100):
+
+        total = len(self.data_loader['test'].dataset)
+        seed = torch.FloatTensor(num_sample).uniform_(1,total).long()
+
+        x = self.data_loader['test'].dataset.test_data[seed]
+        x = self.scale(x.float().unsqueeze(1).div(255))
+        y = self.data_loader['test'].dataset.test_labels[seed]
+
+        return x,y
 
 
     def FGSM(self, x, y, epsilon=0.03, iteration=1):
@@ -243,16 +253,6 @@ class Solver(object):
                 (accuracy_true.data[0],cost_true.data[0],accuracy_adv.data[0],cost_adv.data[0])
 
 
-    def sample_data(self, num_sample=100):
-
-        total = len(self.data_loader['test'].dataset)
-        seed = torch.FloatTensor(num_sample).uniform_(1,total).long()
-
-        x = self.data_loader['test'].dataset.test_data[seed]
-        x = self.scale(x.float().unsqueeze(1).div(255))
-        y = self.data_loader['test'].dataset.test_labels[seed]
-
-        return x,y
 
 
     def save_checkpoint(self, filename='ckpt.tar'):
