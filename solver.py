@@ -7,12 +7,11 @@ import torch.nn as nn
 import torch.optim as optim
 import torch.nn.functional as F
 from torch.autograd import Variable
-from torchvision.utils import make_grid
 from torchvision import transforms
+from torchvision.utils import save_image
 
 from models.toynet import TOYNET
 from datasets.datasets import return_data
-from utils.visdom_utils import VisFunc
 from utils.utils import One_Hot, rm_dir, cuda
 
 
@@ -32,9 +31,18 @@ class Solver(object):
         self.data_loader = return_data(args)
         self.global_epoch = 0
         self.global_iter = 0
+        self.print_ = not args.silent
+
+        self.env_name = args.env_name
         self.tensorboard = args.tensorboard
         if self.tensorboard : from tensorboardX import SummaryWriter
-        self.print_ = not args.silent
+        self.visdom = args.visdom
+        if self.visdom : from utils.visdom_utils import VisFunc
+
+        self.ckpt_dir = Path(args.ckpt_dir).joinpath(args.env_name)
+        if not self.ckpt_dir.exists() : self.ckpt_dir.mkdir(parents=True,exist_ok=True)
+        self.output_dir = Path(args.output_dir).joinpath(args.env_name)
+        if not self.output_dir.exists() : self.output_dir.mkdir(parents=True,exist_ok=True)
 
         # Visualization Tools
         self.visualization_init(args)
@@ -56,15 +64,15 @@ class Solver(object):
 
     def visualization_init(self, args):
         # Visdom
-        self.env_name = args.env_name
-        self.port = args.port
-        self.vf = VisFunc(enval=self.env_name,port=self.port)
+        if self.visdom :
+            self.port = args.visdom_port
+            self.vf = VisFunc(enval=self.env_name,port=self.port)
 
         # TensorboardX
-        self.summary_dir = Path(args.summary_dir).joinpath(args.env_name)
-        if not self.summary_dir.exists() : self.summary_dir.mkdir(parents=True,exist_ok=True)
-        self.ckpt_dir = Path(args.ckpt_dir).joinpath(args.env_name)
         if self.tensorboard :
+            self.summary_dir = Path(args.summary_dir).joinpath(args.env_name)
+            if not self.summary_dir.exists() : self.summary_dir.mkdir(parents=True,exist_ok=True)
+
             self.tf = SummaryWriter(log_dir=str(self.summary_dir))
             self.tf.add_text(tag='argument',text_string=str(args),global_step=self.global_epoch)
 
@@ -187,13 +195,26 @@ class Solver(object):
         self.set_mode('eval')
 
         x_true, y_true = self.sample_data(num_sample)
-
         x_adv, changed, values = self.FGSM(x_true,y_true,epsilon,iteration)
         accuracy_true,cost_true,accuracy_adv,cost_adv = values
 
-        self.vf.imshow_multi(x_true, title='legitimate', factor=1.5)
-        self.vf.imshow_multi(x_adv, title='perturbed(e:{},i:{})'.format(epsilon,iteration), factor=1.5)
-        self.vf.imshow_multi(changed, title='changed(white)'.format(epsilon), factor=1.5)
+        save_image(x_true,
+                self.output_dir.joinpath('legitimate(e:{},i:{}).jpg'.format(epsilon,iteration)),
+                nrow=10,
+                padding=0)
+        save_image(x_adv,
+                self.output_dir.joinpath('perturbed(e:{},i:{}).jpg'.format(epsilon,iteration)),
+                nrow=10,
+                padding=0)
+        save_image(changed,
+                self.output_dir.joinpath('changed(e:{},i:{}).jpg'.format(epsilon,iteration)),
+                nrow=10,
+                padding=0)
+        if self.visdom :
+            self.vf.imshow_multi(x_true, title='legitimate', factor=1.5)
+            self.vf.imshow_multi(x_adv, title='perturbed(e:{},i:{})'.format(epsilon,iteration), factor=1.5)
+            self.vf.imshow_multi(changed, title='changed(white)'.format(epsilon), factor=1.5)
+
         print('[BEFORE] accuracy : {:.2f} cost : {:.3f}'.format(accuracy_true,cost_true))
         print('[AFTER] accuracy : {:.2f} cost : {:.3f}'.format(accuracy_adv,cost_adv))
 
@@ -242,10 +263,24 @@ class Solver(object):
         accuracy_adv = torch.eq(prediction_adv,y_true).float().mean()
         cost_adv = F.cross_entropy(logit_adv, y_true)
 
+        # make indication of perturbed images that changed predictions of the classifier
         changed = torch.eq(prediction_true,prediction_adv)
         changed = torch.eq(changed,0)
         changed = changed.view(-1,1,1,1).repeat(1,1,28,28)
-        changed = self.scale(changed.float())
+
+        temp = changed.float()
+        temp = temp.repeat(1,3,1,1)
+
+        r = temp[:,0,:,:].clone()
+        r *= 252
+        g = temp[:,1,:,:].clone()
+        g *= 207
+        b = temp[:,2,:,:].clone()
+        b *= 25
+
+        changed = torch.stack([r,g,b],1)
+        changed = self.scale(changed/255)
+        changed[:,:,2:-1,2:-1] = x_adv.repeat(1,3,1,1)[:,:,2:-1,2:-1]
 
         self.set_mode('train')
 
@@ -271,7 +306,6 @@ class Solver(object):
             'optim_states':optim_states,
         }
 
-        if not self.ckpt_dir.exists() : self.ckpt_dir.mkdir(parents=True,exist_ok=True)
         file_path = self.ckpt_dir / filename
         torch.save(states,file_path.open('wb+'))
         print("=> saved checkpoint '{}' (iter {})".format(file_path,self.global_iter))

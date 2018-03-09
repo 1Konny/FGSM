@@ -41,7 +41,6 @@ if __name__ == "__main__":
     parser.add_argument('--y_dim', default = 10, type=int, help='the number of classes')
     parser.add_argument('--eps', default = 1e-9, type=float, help='epsilon')
     parser.add_argument('--env_name', default='main', type=str, help='experiment name')
-    parser.add_argument('--port', default=55558, type=str, help='visdom port')
     parser.add_argument('--dataset', default='FMNIST', type=str, help='dataset type')
     parser.add_argument('--dset_dir', default='datasets', type=str, help='dataset directory path')
     parser.add_argument('--summary_dir', default='summary', type=str, help='summary directory path')
@@ -55,6 +54,8 @@ if __name__ == "__main__":
     parser.add_argument('--iteration', default=1, type=int, help='the number of iteration for FGSM')
     parser.add_argument('--epsilon', default=0.03, type=float, help='epsilon for FGSM')
     parser.add_argument('--tensorboard', default=False, type=str2bool, help='enable tensorboard')
+    parser.add_argument('--visdom', default=False, type=str2bool, help='enable visdom')
+    parser.add_argument('--visdom_port', default=55558, type=str, help='visdom port')
     args = parser.parse_args()
 
     main(args)
