@@ -2,8 +2,10 @@
 <br>
 
 ### Overview 
-Simple pytorch implementation of FGSM( from this paper : [EXPLAINING AND HARNESSING ADVERSARIAL EXAMPLES] )
-![Figure0](misc/fig0.PNG)  
+Simple pytorch implementation of FGSM and I-FGSM  
+(FGSM : [explaining and harnessing adversarial examples)  
+(I-FGSM : [adversarial examples in the physical world])  
+![Figure0](misc/fig0.PNG)
 ![FGSM](misc/FGSM.PNG)
 <br>
 
@@ -43,4 +45,5 @@ from the left, legitimate examples, perturbed examples, and indication of pertur
 - [ ] add cifar10
 - [ ] add targeted/untargeted generation mode
 
-[EXPLAINING AND HARNESSING ADVERSARIAL EXAMPLES]: https://arxiv.org/abs/1412.6572
+[explaining and harnessing adversarial examples]: https://arxiv.org/abs/1412.6572
+[adversarial examples in the physical world]: http://arxiv.org/abs/1607.02533
