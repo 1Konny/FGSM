@@ -2,6 +2,8 @@ __pycache__
 
 checkpoints/*
 summary/*
+output/*
+
 datasets/MNIST
 
 git.sh
