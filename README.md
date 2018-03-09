@@ -35,8 +35,8 @@ python main.py --mode generate --iteration 1 --epsilon 0.03 --target 3 --env_nam
 <br>
 
 ### Results
-#### Non-target attack
-from the left, legitimate examples, perturbed examples, and indication of perturbed images that changed predictions of the classifier
+#### Non-targeted attack
+from the left, legitimate examples, perturbed examples, and indication of perturbed images that changed predictions of the classifier, respectively
 1. non-targeted attack, iteration : 1, epsilon : 0.03
 ![non-targeted1](misc/nontargeted_1.PNG)
 2. non-targeted attack, iteration : 5, epsilon : 0.03
@@ -46,7 +46,7 @@ from the left, legitimate examples, perturbed examples, and indication of pertur
 <br>
 
 #### Targeted attack
-from the left, legitimate examples, perturbed examples, and indication of perturbed images that led the classifier to predict an input as the target
+from the left, legitimate examples, perturbed examples, and indication of perturbed images that led the classifier to predict an input as the target, respectively
 1. targeted attack(9), iteration : 1, epsilon : 0.03
 ![targeted1](misc/targetd_9_1.PNG)
 2. targeted attack(9), iteration : 5, epsilon : 0.03
