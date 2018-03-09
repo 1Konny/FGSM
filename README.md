@@ -28,7 +28,7 @@ python main.py --mode train --env_name [MODEL_NAME]
 ```
 python main.py --mode generate --iteration 1 --epsilon 0.03 --env_name [MODEL_NAME] --load_ckpt best_acc.tar
 ```
-3. for a targeted attack, use ```--target``` argument
+3. for a targeted attack, indicate target class number using ```--target``` argument(default is -1 for a non-targeted attack)
 ```
 python main.py --mode generate --iteration 1 --epsilon 0.03 --target 3 --env_name [MODEL_NAME] --load_ckpt best_acc.tar
 ```
