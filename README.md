@@ -22,7 +22,7 @@ tensorflow(optional)
 ```
 python main.py --mode train --env_name [MODEL_NAME]
 ```
-2. load trained classifier, generate adversarial examples, and then see result on the visdom server
+2. load trained classifier, generate adversarial examples, and then see outputs in the output directory
 ```
 python main.py --mode generate --iteration 1 --epsilon 0.03 --env_name [MODEL_NAME] --load_ckpt best_acc.tar
 ```
