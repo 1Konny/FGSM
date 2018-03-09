@@ -274,8 +274,6 @@ class Solver(object):
         changed = self.scale(changed/255)
         changed[:,:,3:-2,3:-2] = x_adv.repeat(1,3,1,1)[:,:,3:-2,3:-2]
 
-
-
         self.set_mode('train')
 
         return x_adv.data, changed.data,\
