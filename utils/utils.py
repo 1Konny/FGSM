@@ -61,3 +61,11 @@ def rm_dir(dir_path, silent=True):
                 rm_dir(path)
         p.rmdir()
         if not silent : print('removed empty dir :',p)
+
+def where(cond, x, y):
+    """
+    code from :
+        https://discuss.pytorch.org/t/how-can-i-do-the-operation-the-same-as-np-where/1329/8
+    """
+    cond = cond.float()
+    return (cond*x) + ((1-cond)*y)

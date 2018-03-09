@@ -12,7 +12,7 @@ from torchvision.utils import save_image
 
 from models.toynet import TOYNET
 from datasets.datasets import return_data
-from utils.utils import rm_dir, cuda, where
+from utils.utils import One_Hot, rm_dir, cuda
 
 
 class Solver(object):
@@ -26,6 +26,7 @@ class Solver(object):
         self.eps = args.eps
         self.lr = args.lr
         self.y_dim = args.y_dim
+        self.onehot_module = One_Hot(args.y_dim)
         self.dataset = args.dataset
         self.data_loader = return_data(args)
         self.global_epoch = 0
@@ -263,18 +264,22 @@ class Solver(object):
         cost_adv = F.cross_entropy(logit_adv, y_true)
 
         # make indication of perturbed images that changed predictions of the classifier
+        def where(cond, x, y):
+            cond = cond.float()
+            return (cond * x) + ((1-cond) * y)
 
         changed = torch.eq(prediction_true,prediction_adv)
         changed = torch.eq(changed,0).float()
         changed = changed.view(-1,1,1,1).repeat(1,3,28,28)
 
         changed[:,0,:,:] = where(changed[:,0,:,:]==1,252,91)
-        changed[:,1,:,:] = where(changed[:,1,:,:]==1,39,252)
+        changed[:,1,:,:] = where(changed[:,1,:,:]==1,207,252)
         changed[:,2,:,:] = where(changed[:,2,:,:]==1,25,25)
         changed = self.scale(changed/255)
-        changed[:,:,3:-2,3:-2] = x_adv.repeat(1,3,1,1)[:,:,3:-2,3:-2]
+        changed[:,:,2:-1,2:-1] = x_adv.repeat(1,3,1,1)[:,:,2:-1,2:-1]
 
 
+        import ipdb; ipdb.set_trace()
 
         self.set_mode('train')
 
