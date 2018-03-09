@@ -56,8 +56,8 @@ from the left, legitimate examples, perturbed examples, and indication of pertur
 <br>
 
 ### To Do
+- [x] add targeted/untargeted generation mode
 - [ ] add cifar10
-- [ ] add targeted/untargeted generation mode
 <br>
 
 ### References
