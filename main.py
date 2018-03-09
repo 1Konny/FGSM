@@ -26,7 +26,10 @@ def main(args):
 
     if args.mode == 'train' : net.train()
     elif args.mode == 'test' : net.test()
-    elif args.mode == 'generate' : net.generate(args.batch_size,args.epsilon,args.iteration)
+    elif args.mode == 'generate' : net.generate(num_sample = args.batch_size,
+                                                target = args.target,
+                                                epsilon = args.epsilon,
+                                                iteration = args.iteration)
     else : return
 
     print('[*] Finished')
@@ -39,6 +42,7 @@ if __name__ == "__main__":
     parser.add_argument('--batch_size', default = 100, type=int, help='mini-batch size')
     parser.add_argument('--lr', default = 2e-4, type=float, help='learning rate')
     parser.add_argument('--y_dim', default = 10, type=int, help='the number of classes')
+    parser.add_argument('--target', default = -1, type=int, help='target class for targeted generation')
     parser.add_argument('--eps', default = 1e-9, type=float, help='epsilon')
     parser.add_argument('--env_name', default='main', type=str, help='experiment name')
     parser.add_argument('--dataset', default='FMNIST', type=str, help='dataset type')

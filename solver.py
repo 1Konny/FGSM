@@ -26,6 +26,7 @@ class Solver(object):
         self.eps = args.eps
         self.lr = args.lr
         self.y_dim = args.y_dim
+        self.target = args.target
         self.dataset = args.dataset
         self.data_loader = return_data(args)
         self.global_epoch = 0
@@ -34,9 +35,7 @@ class Solver(object):
 
         self.env_name = args.env_name
         self.tensorboard = args.tensorboard
-        if self.tensorboard : from tensorboardX import SummaryWriter
         self.visdom = args.visdom
-        if self.visdom : from utils.visdom_utils import VisFunc
 
         self.ckpt_dir = Path(args.ckpt_dir).joinpath(args.env_name)
         if not self.ckpt_dir.exists() : self.ckpt_dir.mkdir(parents=True,exist_ok=True)
@@ -64,11 +63,13 @@ class Solver(object):
     def visualization_init(self, args):
         # Visdom
         if self.visdom :
+            from utils.visdom_utils import VisFunc
             self.port = args.visdom_port
             self.vf = VisFunc(enval=self.env_name,port=self.port)
 
         # TensorboardX
         if self.tensorboard :
+            from tensorboardX import SummaryWriter
             self.summary_dir = Path(args.summary_dir).joinpath(args.env_name)
             if not self.summary_dir.exists() : self.summary_dir.mkdir(parents=True,exist_ok=True)
 
@@ -190,10 +191,12 @@ class Solver(object):
         self.set_mode('train')
 
 
-    def generate(self,num_sample=100,epsilon=0.03,iteration=10):
+    def generate(self,num_sample=100,target=-1,epsilon=0.03,iteration=1):
         self.set_mode('eval')
 
         x_true, y_true = self.sample_data(num_sample)
+        if isinstance(target, int) and (target in range(self.y_dim)): y_true.fill_(target)
+
         x_adv, changed, values = self.FGSM(x_true,y_true,epsilon,iteration)
         accuracy_true,cost_true,accuracy_adv,cost_adv = values
 
@@ -344,5 +347,3 @@ class Solver(object):
 
     def checkpoint_flush(self, silent=True):
         rm_dir(self.ckpt_dir, silent)
-
-

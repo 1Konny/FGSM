@@ -28,16 +28,20 @@ python main.py --mode train --env_name [MODEL_NAME]
 ```
 python main.py --mode generate --iteration 1 --epsilon 0.03 --env_name [MODEL_NAME] --load_ckpt best_acc.tar
 ```
+3. for a targeted attack, use ```--target``` argument
+```
+python main.py --mode generate --iteration 1 --epsilon 0.03 --target 3 --env_name [MODEL_NAME] --load_ckpt best_acc.tar
+```
 <br>
 
 ### Results
 from the left, legitimate examples, perturbed examples, and indication of perturbed images that changed predictions of the classifier
 
-1. iteration : 1, epsilon : 0.03
+1. non-targeted attack, iteration : 1, epsilon : 0.03
 ![Figure1](misc/fig1.PNG)
-2. iteration : 5, epsilon : 0.03
+2. non-targeted attack, iteration : 5, epsilon : 0.03
 ![Figure2](misc/fig2.PNG)
-1. iteration : 1, epsilon : 0.5
+1. non-targeted attack, iteration : 1, epsilon : 0.5
 ![Figure3](misc/fig3.PNG)
 <br>
 
