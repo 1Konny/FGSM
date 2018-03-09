@@ -11,24 +11,20 @@ Simple pytorch implementation of FGSM( from this paper : [EXPLAINING AND HARNESS
 ```
 python 3.6.4
 pytorch 0.3.1.post2
-visdom
+visdom(optional)
 tensorboardX(optional)
 tensorflow(optional)
 ```
 <br>
 
 ### Usage
-1. start the visdom server
+1. train a simple MNIST classifier
 ```
-python -m visdom.server --port [PORT]
+python main.py --mode train --env_name [MODEL_NAME]
 ```
-2. train a simple MNIST classifier
+2. load trained classifier, generate adversarial examples, and then see result on the visdom server
 ```
-python main.py --mode train --port [PORT] --env_name my_model
-```
-3. load trained classifier, generate adversarial examples, and then see result on the visdom server
-```
-python main.py --mode generate --port [PORT] --iteration 1 --epsilon 0.03 --env_name my_model --load_ckpt best_acc.tar
+python main.py --mode generate --iteration 1 --epsilon 0.03 --env_name [MODEL_NAME] --load_ckpt best_acc.tar
 ```
 <br>
 
@@ -45,7 +41,6 @@ from the left, legitimate examples, perturbed examples, and indication of pertur
 
 ### To Do
 - [ ] add cifar10
-- [ ] remove visdom dependency
 - [ ] add targeted/untargeted generation mode
 
 [EXPLAINING AND HARNESSING ADVERSARIAL EXAMPLES]: https://arxiv.org/abs/1412.6572
