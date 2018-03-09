@@ -38,6 +38,7 @@ class VisFunc(object):
 
 
     def imshow_multi(self, imgs, nrow=10, title=' ', caption=' ', factor=1):
+        #self.imshow( make_grid(imgs,nrow,padding=padding), title, caption, factor)
         self.imshow( make_grid(imgs,nrow), title, caption, factor)
 
 
