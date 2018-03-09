@@ -35,6 +35,7 @@ python main.py --mode generate --iteration 1 --epsilon 0.03 --target 3 --env_nam
 <br>
 
 ### Results
+#### Non-target attack
 from the left, legitimate examples, perturbed examples, and indication of perturbed images that changed predictions of the classifier
 1. non-targeted attack, iteration : 1, epsilon : 0.03
 ![non-targeted1](misc/nontargeted_1.PNG)
@@ -44,13 +45,14 @@ from the left, legitimate examples, perturbed examples, and indication of pertur
 ![non-targeted3](misc/nontargeted_3.PNG)
 <br>
 
+#### Targeted attack
 from the left, legitimate examples, perturbed examples, and indication of perturbed images that led the classifier to predict an input as the target
 1. targeted attack(9), iteration : 1, epsilon : 0.03
-![targeted1](misc/targetd_9_1.PNGtargeted_1.PNG)
+![targeted1](misc/targetd_9_1.PNG)
 2. targeted attack(9), iteration : 5, epsilon : 0.03
-![targeted2](misc/targetd_9_2.PNGtargeted_2.PNG)
+![targeted2](misc/targetd_9_2.PNG)
 1. targeted attack(9), iteration : 1, epsilon : 0.5
-![targeted3](misc/targetd_9_3.PNGtargeted_3.PNG)
+![targeted3](misc/targetd_9_3.PNG)
 <br>
 
 ### To Do
