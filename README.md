@@ -3,8 +3,8 @@
 
 ### Overview 
 Simple pytorch implementation of FGSM and I-FGSM  
-(FGSM : [explaining and harnessing adversarial examples])  
-(I-FGSM : [adversarial examples in the physical world])  
+(FGSM : [explaining and harnessing adversarial examples, Goodfellow et al.])  
+(I-FGSM : [adversarial examples in the physical world, Kurakin et al.])  
 ![overview](misc/overview.PNG)
 ![FGSM](misc/FGSM.PNG)
 <br>
@@ -64,5 +64,5 @@ from the left, legitimate examples, perturbed examples, and indication of pertur
 1. explaining and harnessing adversarial examples, Goodfellow et al.
 2. adversarial examples in the physical world, Kurakin et al.
 
-[explaining and harnessing adversarial examples]: https://arxiv.org/abs/1412.6572
-[adversarial examples in the physical world]: http://arxiv.org/abs/1607.02533
+[explaining and harnessing adversarial examples, Goodfellow et al.]: https://arxiv.org/abs/1412.6572
+[adversarial examples in the physical world, Kurakin et al.]: http://arxiv.org/abs/1607.02533
