@@ -3,7 +3,7 @@
 
 ### Overview 
 Simple pytorch implementation of FGSM and I-FGSM  
-(FGSM : [explaining and harnessing adversarial examples)  
+(FGSM : [explaining and harnessing adversarial examples])  
 (I-FGSM : [adversarial examples in the physical world])  
 ![Figure0](misc/fig0.PNG)
 ![FGSM](misc/FGSM.PNG)
@@ -30,7 +30,7 @@ python main.py --mode generate --iteration 1 --epsilon 0.03 --env_name [MODEL_NA
 ```
 <br>
 
-### Result
+### Results
 from the left, legitimate examples, perturbed examples, and indication of perturbed images that changed predictions of the classifier
 
 1. iteration : 1, epsilon : 0.03
@@ -44,6 +44,11 @@ from the left, legitimate examples, perturbed examples, and indication of pertur
 ### To Do
 - [ ] add cifar10
 - [ ] add targeted/untargeted generation mode
+<br>
+
+### References
+1. explaining and harnessing adversarial examples, Goodfellow et al.
+2. adversarial examples in the physical world, Kurakin et al.
 
 [explaining and harnessing adversarial examples]: https://arxiv.org/abs/1412.6572
 [adversarial examples in the physical world]: http://arxiv.org/abs/1607.02533
