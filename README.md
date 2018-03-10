@@ -58,11 +58,6 @@ from the left, legitimate examples, perturbed examples, and indication of pertur
 ![targeted3](misc/targetd_9_3.PNG)
 <br>
 
-### To Do
-- [x] add targeted/untargeted generation mode
-- [ ] add cifar10
-<br>
-
 ### References
 1. explaining and harnessing adversarial examples, Goodfellow et al.
 2. adversarial examples in the physical world, Kurakin et al.
