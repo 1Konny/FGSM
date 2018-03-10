@@ -6,7 +6,10 @@ Simple pytorch implementation of FGSM and I-FGSM
 (FGSM : [explaining and harnessing adversarial examples, Goodfellow et al.])  
 (I-FGSM : [adversarial examples in the physical world, Kurakin et al.])  
 ![overview](misc/overview.PNG)
+#### FGSM
 ![FGSM](misc/FGSM.PNG)
+#### I-FGSM
+![IFGSM](misc/IFGSM.PNG)
 <br>
 
 ### Dependencies
