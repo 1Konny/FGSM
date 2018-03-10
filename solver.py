@@ -96,8 +96,8 @@ class Solver(object):
             for batch_idx, (images,labels) in enumerate(self.data_loader['train']):
                 self.global_iter += 1
 
-                x = cuda(Variable(images),self.cuda)
-                y = cuda(Variable(labels),self.cuda)
+                x = Variable(cuda(images, self.cuda))
+                y = Variable(cuda(labels, self.cuda))
 
                 logit = self.net(x)
                 prediction = logit.max(1)[1]
@@ -148,8 +148,8 @@ class Solver(object):
 
         data_loader = self.data_loader['test']
         for batch_idx, (images,labels) in enumerate(data_loader):
-            x = cuda(Variable(images),self.cuda)
-            y = cuda(Variable(labels),self.cuda)
+            x = Variable(cuda(images, self.cuda))
+            y = Variable(cuda(labels, self.cuda))
 
             logit = self.net(x)
             prediction = logit.max(1)[1]
@@ -245,9 +245,9 @@ class Solver(object):
         if -1 in y_t : targeted = False
         else : targeted = True
 
-        y_target = cuda(Variable(y_t, requires_grad=False),self.cuda)
-        y_true = cuda(Variable(y, requires_grad=False),self.cuda)
-        x_true = cuda(Variable(x, requires_grad=True),self.cuda)
+        y_target = Variable(cuda(y_t, self.cuda), requires_grad=False)
+        y_true = Variable(cuda(y, self.cuda), requires_grad=False)
+        x_true = Variable(cuda(x, self.cuda), requires_grad=True)
         x_adv = x_true
 
         logit_true = self.net(x_true)
