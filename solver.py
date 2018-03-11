@@ -322,7 +322,7 @@ class Solver(object):
     def load_checkpoint(self, filename='best_acc.tar'):
         file_path = self.ckpt_dir / filename
         if file_path.is_file():
-            print("=> loading checkpoint '{}'".format(file_path,self.global_iter))
+            print("=> loading checkpoint '{}'".format(file_path))
             checkpoint = torch.load(file_path.open('rb'))
             self.global_epoch = checkpoint['epoch']
             self.global_iter = checkpoint['iter']
