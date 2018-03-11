@@ -207,15 +207,18 @@ class Solver(object):
         save_image(x_true,
                 self.output_dir.joinpath('legitimate(t:{},e:{},i:{}).jpg'.format(target,epsilon,iteration)),
                 nrow=10,
-                padding=0)
+                padding=2,
+                pad_value=0.5)
         save_image(x_adv,
                 self.output_dir.joinpath('perturbed(t:{},e:{},i:{}).jpg'.format(target,epsilon,iteration)),
                 nrow=10,
-                padding=0)
+                padding=2,
+                pad_value=0.5)
         save_image(changed,
                 self.output_dir.joinpath('changed(t:{},e:{},i:{}).jpg'.format(target,epsilon,iteration)),
                 nrow=10,
-                padding=0)
+                padding=3,
+                pad_value=0.5)
         if self.visdom :
             self.vf.imshow_multi(x_true, title='legitimate', factor=1.5)
             self.vf.imshow_multi(x_adv, title='perturbed(e:{},i:{})'.format(epsilon,iteration), factor=1.5)
