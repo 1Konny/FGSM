@@ -56,9 +56,6 @@ class Solver(object):
         self.load_ckpt = args.load_ckpt
         if self.load_ckpt != '' : self.load_checkpoint(self.load_ckpt)
 
-        # Losses & Distances
-        self.CE_Loss = cuda(nn.CrossEntropyLoss(),self.cuda)
-
 
     def visualization_init(self, args):
         # Visdom
