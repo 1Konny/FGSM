@@ -261,8 +261,8 @@ class Solver(object):
             else :  cost = F.cross_entropy(logit, y_true)
 
             self.net.zero_grad()
-            try :x_adv.grad.data.fill_(0)
-            except : pass
+            if x_adv.grad is not None :
+                x_adv.grad.data.fill_(0)
             cost.backward()
 
             x_adv.grad.sign_()
