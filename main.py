@@ -1,7 +1,10 @@
-import numpy as np
-import torch, argparse
-from solver import Solver
+"""main.py"""
+import argparse
 
+import numpy as np
+import torch
+
+from solver import Solver
 from utils.utils import str2bool
 
 def main(args):
@@ -24,13 +27,18 @@ def main(args):
 
     net = Solver(args)
 
-    if args.mode == 'train' : net.train()
-    elif args.mode == 'test' : net.test()
-    elif args.mode == 'generate' : net.generate(num_sample = args.batch_size,
-                                                target = args.target,
-                                                epsilon = args.epsilon,
-                                                iteration = args.iteration)
-    else : return
+    if args.mode == 'train':
+        net.train()
+    elif args.mode == 'test':
+        net.test()
+    elif args.mode == 'generate':
+        net.generate(num_sample=args.batch_size,
+                     target=args.target,
+                     epsilon=args.epsilon,
+                     iteration=args.iteration)
+    elif args.mode == 'universal':
+        net.universal(args)
+    else: return
 
     print('[*] Finished')
 
@@ -38,28 +46,28 @@ def main(args):
 if __name__ == "__main__":
 
     parser = argparse.ArgumentParser(description='toynet template')
-    parser.add_argument('--epoch', default = 20, type=int, help='epoch size')
-    parser.add_argument('--batch_size', default = 100, type=int, help='mini-batch size')
-    parser.add_argument('--lr', default = 2e-4, type=float, help='learning rate')
-    parser.add_argument('--y_dim', default = 10, type=int, help='the number of classes')
-    parser.add_argument('--target', default = -1, type=int, help='target class for targeted generation')
-    parser.add_argument('--eps', default = 1e-9, type=float, help='epsilon')
-    parser.add_argument('--env_name', default='main', type=str, help='experiment name')
-    parser.add_argument('--dataset', default='FMNIST', type=str, help='dataset type')
-    parser.add_argument('--dset_dir', default='datasets', type=str, help='dataset directory path')
-    parser.add_argument('--summary_dir', default='summary', type=str, help='summary directory path')
-    parser.add_argument('--output_dir', default='output', type=str, help='output directory path')
-    parser.add_argument('--ckpt_dir', default='checkpoints', type=str, help='checkpoint directory path')
+    parser.add_argument('--epoch', type=int, default=20, help='epoch size')
+    parser.add_argument('--batch_size', type=int, default=100, help='mini-batch size')
+    parser.add_argument('--lr', type=float, default=2e-4, help='learning rate')
+    parser.add_argument('--y_dim', type=int, default=10, help='the number of classes')
+    parser.add_argument('--target', type=int, default=-1, help='target class for targeted generation')
+    parser.add_argument('--eps', type=float, default=1e-9, help='epsilon')
+    parser.add_argument('--env_name', type=str, default='main', help='experiment name')
+    parser.add_argument('--dataset', type=str, default='FMNIST', help='dataset type')
+    parser.add_argument('--dset_dir', type=str, default='datasets', help='dataset directory path')
+    parser.add_argument('--summary_dir', type=str, default='summary', help='summary directory path')
+    parser.add_argument('--output_dir', type=str, default='output', help='output directory path')
+    parser.add_argument('--ckpt_dir', type=str, default='checkpoints', help='checkpoint directory path')
     parser.add_argument('--load_ckpt', type=str, default='', help='')
     parser.add_argument('--cuda', type=str2bool, default=True, help='enable cuda')
     parser.add_argument('--silent', type=str2bool, default=False, help='')
-    parser.add_argument('--mode', type=str, default='train', help='train / test / generate')
-    parser.add_argument('--seed', default=1, type=int, help='random seed')
-    parser.add_argument('--iteration', default=1, type=int, help='the number of iteration for FGSM')
-    parser.add_argument('--epsilon', default=0.03, type=float, help='epsilon for FGSM')
-    parser.add_argument('--tensorboard', default=False, type=str2bool, help='enable tensorboard')
-    parser.add_argument('--visdom', default=False, type=str2bool, help='enable visdom')
-    parser.add_argument('--visdom_port', default=55558, type=str, help='visdom port')
+    parser.add_argument('--mode', type=str, default='train', help='train / test / generate / universal')
+    parser.add_argument('--seed', type=int, default=1, help='random seed')
+    parser.add_argument('--iteration', type=int, default=1, help='the number of iteration for FGSM')
+    parser.add_argument('--epsilon', type=float, default=0.03, help='epsilon for FGSM')
+    parser.add_argument('--tensorboard', type=str2bool, default=False, help='enable tensorboard')
+    parser.add_argument('--visdom', type=str2bool, default=False, help='enable visdom')
+    parser.add_argument('--visdom_port', type=str, default=55558, help='visdom port')
     args = parser.parse_args()
 
     main(args)
