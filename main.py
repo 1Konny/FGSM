@@ -35,6 +35,7 @@ def main(args):
         net.generate(num_sample=args.batch_size,
                      target=args.target,
                      epsilon=args.epsilon,
+                     alpha=args.alpha,
                      iteration=args.iteration)
     elif args.mode == 'universal':
         net.universal(args)
@@ -64,7 +65,8 @@ if __name__ == "__main__":
     parser.add_argument('--mode', type=str, default='train', help='train / test / generate / universal')
     parser.add_argument('--seed', type=int, default=1, help='random seed')
     parser.add_argument('--iteration', type=int, default=1, help='the number of iteration for FGSM')
-    parser.add_argument('--epsilon', type=float, default=0.03, help='epsilon for FGSM')
+    parser.add_argument('--epsilon', type=float, default=0.03, help='epsilon for FGSM and i-FGSM')
+    parser.add_argument('--alpha', type=float, default=2/255, help='alpha for i-FGSM')
     parser.add_argument('--tensorboard', type=str2bool, default=False, help='enable tensorboard')
     parser.add_argument('--visdom', type=str2bool, default=False, help='enable visdom')
     parser.add_argument('--visdom_port', type=str, default=55558, help='visdom port')
