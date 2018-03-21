@@ -299,69 +299,6 @@ class Solver(object):
         return x_adv.data, changed.data,\
                 (accuracy.data[0], cost.data[0], accuracy_adv.data[0], cost_adv.data[0])
 
-    def FGSM2(self, x, y, y_t, epsilon=0.03, alpha=2/255, iteration=1):
-        self.set_mode('eval')
-
-        if -1 in y_t:
-            targeted = False
-        else:
-            targeted = True
-
-        y_target = Variable(cuda(y_t, self.cuda), requires_grad=False)
-        y_true = Variable(cuda(y, self.cuda), requires_grad=False)
-        x_true = Variable(cuda(x, self.cuda), requires_grad=True)
-        x_adv = x_true
-
-        logit_true = self.net(x_true)
-        prediction_true = logit_true.max(1)[1]
-        accuracy_true = torch.eq(prediction_true, y_true).float().mean()
-        cost_true = F.cross_entropy(logit_true, y_true)
-
-
-
-        for i in range(iteration):
-            logit = self.net(x_adv)
-            if targeted:
-                cost = F.cross_entropy(logit, y_target)
-            else:
-                cost = -F.cross_entropy(logit, y_true)
-
-            self.net.zero_grad()
-            if x_adv.grad is not None:
-                x_adv.grad.data.fill_(0)
-            cost.backward()
-
-            x_adv.grad.sign_()
-            x_adv = x_adv - alpha*x_adv.grad
-            #x_adv = where(x_adv > x_true+epsilon, x_true+epsilon, x_adv)
-            #x_adv = where(x_adv < x_true-epsilon, x_true-epsilon, x_adv)
-            x_adv = torch.clamp(x_adv, -1, 1)
-            x_adv = Variable(x_adv.data, requires_grad=True)
-
-        logit_adv = self.net(x_adv)
-        prediction_adv = logit_adv.max(1)[1]
-        accuracy_adv = torch.eq(prediction_adv, y_true).float().mean()
-        cost_adv = F.cross_entropy(logit_adv, y_true)
-
-        # make indication of perturbed images that changed predictions of the classifier
-        if targeted:
-            changed = torch.eq(y_target, prediction_adv)
-        else:
-            changed = torch.eq(prediction_true, prediction_adv)
-            changed = torch.eq(changed, 0)
-        changed = changed.float().view(-1, 1, 1, 1).repeat(1, 3, 28, 28)
-
-        changed[:, 0, :, :] = where(changed[:, 0, :, :] == 1, 252, 91)
-        changed[:, 1, :, :] = where(changed[:, 1, :, :] == 1, 39, 252)
-        changed[:, 2, :, :] = where(changed[:, 2, :, :] == 1, 25, 25)
-        changed = self.scale(changed/255)
-        changed[:, :, 3:-2, 3:-2] = x_adv.repeat(1, 3, 1, 1)[:, :, 3:-2, 3:-2]
-
-        self.set_mode('train')
-
-        return x_adv.data, changed.data,\
-                (accuracy_true.data[0], cost_true.data[0], accuracy_adv.data[0], cost_adv.data[0])
-
     def save_checkpoint(self, filename='ckpt.tar'):
         model_states = {
             'net':self.net.state_dict(),
